@@ -1,24 +1,23 @@
-from rest_framework import generics
+from rest_framework import generics, exceptions
 from rest_framework.response import Response
-from django.db import connection
-import json
+from .serializers import AveragePriceSerializer
+from .queries import QueryHandler
 
 
 class AveragePriceList(generics.ListAPIView):
-    def get(self,request):
-        query = f"""
-            SELECT DATE(day) AS day, AVG(price) AS avg_price
-        FROM prices
-        LEFT JOIN ports AS origin_port ON origin_port.code = prices.orig_code
-        LEFT JOIN ports AS dest_port ON dest_port.code = prices.dest_code
-        WHERE (origin_port.code = 'CNSGH' OR origin_port.parent_slug = 'asdasd')
-        AND (dest_port.code = 'NOOSL' OR dest_port.parent_slug  = 'dasads')
-        AND day BETWEEN DATE('2016-01-01') AND DATE('2016-01-10')
-        GROUP BY DATE(day)
-        HAVING COUNT(*) >= 3
-            """
-        with connection.cursor() as cursor:
-            cursor.execute(query)
-            result = cursor.fetchall()
+    serializer_class = AveragePriceSerializer
 
-        return Response(result)
+    def get(self, request):
+        origin = request.query_params.get("origin")
+        destination = request.query_params.get("destination")
+        date_from = request.query_params.get("date_from")
+        date_to = request.query_params.get("date_to")
+
+        QueryHandler.validate_params(origin, destination, date_from, date_to)
+
+        result = QueryHandler.execute_query(origin, destination, date_from, date_to)
+
+        result_list = [{"day": r[0], "average_price": r[1]} for r in result]
+
+        serialized_result = AveragePriceSerializer(result_list, many=True)
+        return Response(serialized_result.data)

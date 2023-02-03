@@ -4,45 +4,51 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Ports',
+            name="Ports",
             fields=[
-                ('code', models.TextField(primary_key=True, serialize=False)),
-                ('name', models.TextField()),
+                ("code", models.TextField(primary_key=True, serialize=False)),
+                ("name", models.TextField()),
             ],
             options={
-                'db_table': 'ports',
-                'managed': False,
+                "db_table": "ports",
+                "managed": False,
             },
         ),
         migrations.CreateModel(
-            name='Prices',
+            name="Prices",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('day', models.DateField()),
-                ('price', models.IntegerField()),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("day", models.DateField()),
+                ("price", models.IntegerField()),
             ],
             options={
-                'db_table': 'prices',
-                'managed': False,
+                "db_table": "prices",
+                "managed": False,
             },
         ),
         migrations.CreateModel(
-            name='Regions',
+            name="Regions",
             fields=[
-                ('slug', models.TextField(primary_key=True, serialize=False)),
-                ('name', models.TextField()),
+                ("slug", models.TextField(primary_key=True, serialize=False)),
+                ("name", models.TextField()),
             ],
             options={
-                'db_table': 'regions',
-                'managed': False,
+                "db_table": "regions",
+                "managed": False,
             },
         ),
     ]

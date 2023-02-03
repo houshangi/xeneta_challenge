@@ -7,4 +7,3 @@ class APITestCase(TestCase):
     def test_one(self):
         with connection.cursor() as cursor:
             cursor.execute("select * from prices")
-
