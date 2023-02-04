@@ -16,6 +16,15 @@ create a .env file in the same directory as setting.py and add following lines t
 ```
 SECRET_KEY=<Your SECRET KEY>
 DEBUG=True #False for production
+DB_NAME=<DATABASE_NAME>
+DB_USER_NAME=<DATABASE_USER_NAME>
+DB_PASSWORD=<DATABASE_PASSWORD>
+DB_HOST=<DATABASE_HOST>
+DB_PORT=<DATABASE_PORT>
+```
+## Run Migrations
+```
+python manage.py migrate
 ```
 ## Run Development WebApp
 ```
