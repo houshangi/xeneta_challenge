@@ -25,6 +25,28 @@ python manage.py runserver
 ```
 python manage.py test rates.tests
 ```
+
+## Docker Setup 
+-Open a terminal in the directory where the Dockerfile is located
+
+-Build the Docker image using the following command:
+
+```
+docker build -t <image-name> .
+```
+
+Replace <image-name> with the desired name
+for your image. The dot at the end specifies the current directory as the build context.
+
+-Start a new Docker container using the following command:
+
+```
+docker run -p 8000:8000 <image-name>
+```
+The -p option maps port 8000 in the container to port 8000 on the host machine.
+
+You can now access the Django development server in your web browser by visiting http://localhost:8000.
+
 ## Local Demo
 use following curl command after running development server
 ```
