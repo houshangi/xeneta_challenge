@@ -61,7 +61,7 @@ class QueryHandler:
             raise exceptions.ValidationError(
                 {"date_to": "date_to must be in the format 'YYYY-MM-DD'"}
             )
-        try :
+        try:
             year, month, day = map(int, date_from.split("-"))
             _, last_day_of_month = calendar.monthrange(year, month)
             if day < 1 or day > last_day_of_month:
@@ -71,13 +71,9 @@ class QueryHandler:
                     }
                 )
         except calendar.IllegalMonthError as e:
-            raise exceptions.ValidationError(
-                {
-                    "date_from" : str(e)
-                }
-            )
+            raise exceptions.ValidationError({"date_from": str(e)})
 
-        try :
+        try:
             year, month, day = map(int, date_to.split("-"))
             _, last_day_of_month = calendar.monthrange(year, month)
             if day < 1 or day > last_day_of_month:
@@ -87,11 +83,7 @@ class QueryHandler:
                     }
                 )
         except calendar.IllegalMonthError as e:
-            raise exceptions.ValidationError(
-                {
-                    "date_to": str(e)
-                }
-            )
+            raise exceptions.ValidationError({"date_to": str(e)})
 
         date_from_dt = datetime.datetime.strptime(date_from, "%Y-%m-%d")
         date_to_dt = datetime.datetime.strptime(date_to, "%Y-%m-%d")

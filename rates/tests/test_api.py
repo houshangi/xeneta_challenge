@@ -30,10 +30,7 @@ class AveragePriceListTestCase(TestCase):
     def test_none_destination_param(self):
         # Test case for none destination parameter
         response = self.client.get(
-            "/api/rates?"
-            "origin=CNSGH&"
-            "date_from=2016-01-01&"
-            "date_to=2016-01-28"
+            "/api/rates?" "origin=CNSGH&" "date_from=2016-01-01&" "date_to=2016-01-28"
         )
         self.assertEqual(response.status_code, 400)
 

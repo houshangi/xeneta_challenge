@@ -29,10 +29,9 @@ class AveragePriceList(generics.ListAPIView):
 
         result = QueryHandler.execute_query(origin, destination, date_from, date_to)
 
-        #convert from list of tuples to dict
+        # convert from list of tuples to dict
         result_list = [{"day": r[0], "average_price": r[1]} for r in result]
 
         serialized_result = AveragePriceSerializer(result_list, many=True)
 
         return Response(serialized_result.data)
-
