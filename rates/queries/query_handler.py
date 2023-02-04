@@ -1,6 +1,8 @@
 import re
 from django.db import connection
 from rest_framework import exceptions
+import calendar
+import datetime
 
 
 class QueryHandler:
@@ -36,6 +38,9 @@ class QueryHandler:
                              If the destination is None or not a string.
                              If the date_from does not match the format 'YYYY-MM-DD'.
                              If the date_to does not match the format 'YYYY-MM-DD'.
+                             If the date_from > date_to.
+                             If the month of the date is not between 1 and 12 .
+                             If day is lower than 1 and bigger than last day of month.
         """
         if origin is None or not isinstance(origin, str):
             raise exceptions.ValidationError(
@@ -56,6 +61,45 @@ class QueryHandler:
             raise exceptions.ValidationError(
                 {"date_to": "date_to must be in the format 'YYYY-MM-DD'"}
             )
+        try :
+            year, month, day = map(int, date_from.split("-"))
+            _, last_day_of_month = calendar.monthrange(year, month)
+            if day < 1 or day > last_day_of_month:
+                raise exceptions.ValidationError(
+                    {
+                        "date_from": f"Day must be between 1 and {last_day_of_month} for the specified month and year"
+                    }
+                )
+        except calendar.IllegalMonthError as e:
+            raise exceptions.ValidationError(
+                {
+                    "date_from" : str(e)
+                }
+            )
+
+        try :
+            year, month, day = map(int, date_to.split("-"))
+            _, last_day_of_month = calendar.monthrange(year, month)
+            if day < 1 or day > last_day_of_month:
+                raise exceptions.ValidationError(
+                    {
+                        "date_to": f"Day must be between 1 and {last_day_of_month} for the specified month and year"
+                    }
+                )
+        except calendar.IllegalMonthError as e:
+            raise exceptions.ValidationError(
+                {
+                    "date_to": str(e)
+                }
+            )
+
+        date_from_dt = datetime.datetime.strptime(date_from, "%Y-%m-%d")
+        date_to_dt = datetime.datetime.strptime(date_to, "%Y-%m-%d")
+
+        if date_from_dt > date_to_dt:
+            raise exceptions.ValidationError(
+                {"date_from": "date_from cannot be after date_to"}
+            )
 
     @staticmethod
     def execute_query(origin, destination, date_from, date_to):
@@ -75,9 +119,7 @@ class QueryHandler:
         query = f"""
             SELECT day AS day,
             CASE  WHEN COUNT(*) >= 3 then
-            AVG(price) ELSE NULL
-            END 
-            AS avg_price
+            AVG(price) ELSE NULL END AS avg_price
             FROM prices
             LEFT JOIN ports AS origin_port ON origin_port.code = prices.orig_code
             LEFT JOIN ports AS dest_port ON dest_port.code = prices.dest_code
