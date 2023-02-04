@@ -28,20 +28,12 @@ class AveragePriceList(generics.ListAPIView):
         date_to = request.query_params.get("date_to")
 
         QueryHandler.validate_params(origin, destination, date_from, date_to)
-        try:
-            result = QueryHandler.execute_query(origin, destination, date_from, date_to)
 
-            result_list = [{"day": r[0], "average_price": r[1]} for r in result]
+        result = QueryHandler.execute_query(origin, destination, date_from, date_to)
 
-            serialized_result = AveragePriceSerializer(result_list, many=True)
+        result_list = [{"day": r[0], "average_price": r[1]} for r in result]
 
-            return Response(serialized_result.data)
-        except DataError:
-            return Response(
-                {
-                    "date_error": "in YYYY-MM-DD format all days must "
-                    "be between 1 and 31 and"
-                    " all months must be between 1 and 12 "
-                },
-                status=400,
-            )
+        serialized_result = AveragePriceSerializer(result_list, many=True)
+
+        return Response(serialized_result.data)
+
