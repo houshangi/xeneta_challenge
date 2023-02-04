@@ -1,7 +1,4 @@
 from unittest import TestCase
-from rest_framework import exceptions
-from rest_framework.test import APIRequestFactory
-from ..views import AveragePriceList
 from django.test import Client
 
 
