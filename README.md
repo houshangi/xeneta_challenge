@@ -28,6 +28,7 @@ python manage.py migrate
 ```
 ## Run Development WebApp
 ```
+python manage.py migrate
 python manage.py runserver 
 ```
 ## Run Unit Tests
