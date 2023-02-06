@@ -1,5 +1,6 @@
 from unittest import TestCase
 from django.test import Client
+from unittest.mock import patch
 
 
 class AveragePriceListTestCase(TestCase):
@@ -13,7 +14,7 @@ class AveragePriceListTestCase(TestCase):
             "origin=CNGGZ&"
             "destination=NOOSL"
             "&date_from=2016-01-01"
-            "&date_to=2016-01-28"
+            "&date_to=2016-01-03"
         )
         self.assertEqual(response.status_code, 200)
 
@@ -26,27 +27,47 @@ class AveragePriceListTestCase(TestCase):
             "&date_to=2016-01-28"
         )
         self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.content,
+            b'{"origin":' b'"origin must be a' b' string and cannot be None"}',
+        )
 
     def test_none_destination_param(self):
         # Test case for none destination parameter
         response = self.client.get(
-            "/api/rates?" "origin=CNSGH&" "date_from=2016-01-01&" "date_to=2016-01-28"
+            "/api/rates?origin=CNSGH&" "date_from=2016-01-01&" "date_to=2016-01-28"
         )
         self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.content,
+            b'{"destination":'
+            b'"destination must '
+            b'be a string and cannot be None"}',
+        )
 
     def test_invalid_month_date_from_param(self):
         # Test case for invalid date_from parameter
         response = self.client.get(
-            "/api/rates?origin=CNSGH&destination=NOOSL&date_from=2022-13-01&date_to=2022-01-10"
+            "/api/rates?origin=CNSGH&destination=NOOSL&"
+            "date_from=2022-13-01&date_to=2022-01-10"
         )
         self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.content, b'{"date_from":"bad month number 13;' b' must be 1-12"}'
+        )
 
     def test_invalid_month_date_to_param(self):
         # Test case for invalid date_to parameter
         response = self.client.get(
-            "/api/rates?origin=CNSGH&destination=NOOSL&date_from=2016-01-01&date_to=2016-13-10"
+            "/api/rates?origin=CNSGH&"
+            "destination=NOOSL"
+            "&date_from=2016-01-01"
+            "&date_to=2016-13-10"
         )
         self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.content, b'{"date_to":"bad month number 13;' b' must be 1-12"}'
+        )
 
     def test_date_from_after_date_to(self):
         response = self.client.get(
@@ -57,3 +78,8 @@ class AveragePriceListTestCase(TestCase):
             "date_to=2016-01-10"
         )
         self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.content,
+            b'{"date_from"' b':"date_from cannot' b' be after date_to"}',
+        )
+
