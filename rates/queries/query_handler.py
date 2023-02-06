@@ -1,4 +1,6 @@
 import re
+from typing import List, Tuple
+
 from django.db import connection
 from rest_framework import exceptions
 import calendar
@@ -23,7 +25,9 @@ class QueryHandler:
     date_regex = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
     @staticmethod
-    def validate_params(origin, destination, date_from, date_to):
+    def validate_params(
+        origin: str, destination: str, date_from: str, date_to: str
+    ) -> None:
         """
         Validates the input parameters for origin, destination, date_from and date_to.
 
@@ -94,7 +98,9 @@ class QueryHandler:
             )
 
     @staticmethod
-    def execute_query(origin, destination, date_from, date_to):
+    def execute_query(
+        origin: str, destination: str, date_from: str, date_to: str
+    ) -> List[Tuple[str, float]]:
         """
         Executes a query to retrieve average prices for a specific
         origin and destination port within a date range.
@@ -108,6 +114,7 @@ class QueryHandler:
         Returns:
             result (List[Tuple[str, float]]): A list of tuples containing the date and average price.
         """
+
         query = f"""
             SELECT day AS day,
             CASE  WHEN COUNT(*) >= 3 then
