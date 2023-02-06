@@ -1,6 +1,5 @@
 from unittest import TestCase
 from django.test import Client
-from unittest.mock import patch
 
 
 class AveragePriceListTestCase(TestCase):
