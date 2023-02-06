@@ -56,6 +56,11 @@ The -p option maps port 8000 in the container to port 8000 on the host machine.
 
 You can now access the Django development server in your web browser by visiting http://localhost:8000.
 
+## Assumptions
+I made two assumptions :
+1. price is float (I understand that you may round price up or down in a real world scenario , but assumed it's a float )
+2. I assumed that if there is no date in the database , but that date is in interval I should not include those times .
+
 ## Local Demo
 use following curl command after running development server
 ```
